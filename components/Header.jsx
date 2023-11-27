@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Avatar } from "react-native-paper";
 import { colors } from "../styles/styles";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 const Header = ({ back, emptyCart = false }) => {
   const navigate = useNavigation();
@@ -15,9 +15,10 @@ const Header = ({ back, emptyCart = false }) => {
           onPress={() => navigate.goBack()}
         >
           <Avatar.Icon
-            style={{ backgroundColor: colors.color1_light }}
+            style={{ backgroundColor: colors.color8 }}
             icon={"chevron-left"}
             color={colors.color7}
+            size={45}
           />
         </TouchableOpacity>
       )}
@@ -27,9 +28,10 @@ const Header = ({ back, emptyCart = false }) => {
         onPress={() => navigate.navigate("cart")}
       >
         <Avatar.Icon
-          style={{ backgroundColor: colors.color1_light }}
+          style={{ backgroundColor: colors.color10}}
           icon={emptyCart ? "" : "cart-outline"}
           color={colors.color7}
+          size={40}
         />
       </TouchableOpacity>
     </>

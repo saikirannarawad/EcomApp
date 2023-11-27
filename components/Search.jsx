@@ -9,7 +9,7 @@ const Search = () => {
   const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
-    <View style={{ marginTop: 20 }}>
+    <View style={{ marginTop: 45}}>
       <Searchbar
         placeholder="Search Products or store"
         onChangeText={onChangeSearch}

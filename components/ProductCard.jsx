@@ -14,10 +14,12 @@ const ProductCard = ({
   stock,
 }) => {
   return (
+    <>
     <TouchableOpacity
       activeOpacity={1}
       onPress={() => navigate.navigate("productdetails", { id })}
-    >
+      >
+      
       <View
         style={{
           elevation: 5,
@@ -28,17 +30,17 @@ const ProductCard = ({
           borderRadius: 12,
           marginLeft:21,
           marginBottom: 30,
-          height: 194,
+          height: 210,
           backgroundColor: colors.color8,
         }}
-      >
+        >
         <View style={{ position: "relative", right: 50, bottom: 20 }}>
           <Avatar.Icon
             style={{ backgroundColor: colors.color8 }}
             icon={"heart-outline"}
             color={colors.color3}
             size={40}
-          />
+            />
         </View>
         <View>
           <Image
@@ -46,7 +48,7 @@ const ProductCard = ({
               uri: img,
             }}
             style={styles.image}
-          />
+            />
         </View>
         <View
           style={{
@@ -54,34 +56,36 @@ const ProductCard = ({
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
+            paddingTop:15
           }}
-        >
+          >
           <View>
             <Text
               style={{
                 fontWeight: "bold",
                 color:colors.color3
               }}
-            >
+              >
               ${price}
             </Text>
             <Text style={{
-                color:colors.color5
-              }}>{name}</Text>
+              color:colors.color5
+            }}>{name}</Text>
           </View>
           <View>
-            <TouchableOpacity onPress={() => addToCartHandler(id, stock)}>
+            <TouchableOpacity onPress={() => addToCartHandler(id, name, price, img, stock)}>
               <Avatar.Icon
                 style={{ backgroundColor: colors.color1_light }}
                 icon="plus"
                 color={colors.color8}
                 size={30}
-              />
+                />
             </TouchableOpacity>
           </View>
         </View>
       </View>
     </TouchableOpacity>
+</>
   );
 };
 

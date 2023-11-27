@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, FlatList } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { colors, defaultStyle } from "../styles/styles";
 import Header from "../components/Header";
 import Search from "../components/Search";
@@ -8,9 +8,22 @@ import DiscountCard from "../components/DiscountCard";
 import ProductCard from "../components/ProductCard";
 import { useNavigation } from "@react-navigation/native";
 import Footer from "../components/Footer";
+import FooterAni from "../components/FooterAni";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllProducts } from "../redux/actions/productAction";
+import Toast from "react-native-toast-message";
+import Loader from "../components/Loader";
 
 const Home = () => {
   const navigate = useNavigation();
+  const dispatch = useDispatch();
+
+  const { products, loading } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(getAllProducts());
+  }, [dispatch]);
+
   const discountCard = [
     {
       _id: 1,
@@ -32,125 +45,28 @@ const Home = () => {
     },
   ];
 
-  const products = [
-    {
-      id: 1,
-      title: "iPhone 9",
-      description: "An apple mobile which is nothing like apple",
-      price: 549,
-      discountPercentage: 12.96,
-      rating: 4.69,
-      stock: 94,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/1/1.jpg",
-        "https://i.dummyjson.com/data/products/1/2.jpg",
-        "https://i.dummyjson.com/data/products/1/3.jpg",
-        "https://i.dummyjson.com/data/products/1/4.jpg",
-        "https://i.dummyjson.com/data/products/1/thumbnail.jpg",
-      ],
-    },
-    {
-      id: 3,
-      title: "iPhone X",
-      description:
-        "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
-      price: 899,
-      discountPercentage: 17.94,
-      rating: 4.44,
-      stock: 34,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/2/1.jpg",
-        "https://i.dummyjson.com/data/products/2/2.jpg",
-        "https://i.dummyjson.com/data/products/2/3.jpg",
-        "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      ],
-    },
-    {
-      id: 4,
-      title: "iPhone X",
-      description:
-        "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
-      price: 899,
-      discountPercentage: 17.94,
-      rating: 4.44,
-      stock: 34,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/2/1.jpg",
-        "https://i.dummyjson.com/data/products/2/2.jpg",
-        "https://i.dummyjson.com/data/products/2/3.jpg",
-        "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      ],
-    },
-    {
-      id: 5,
-      title: "iPhone X",
-      description:
-        "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
-      price: 899,
-      discountPercentage: 17.94,
-      rating: 4.44,
-      stock: 34,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/2/1.jpg",
-        "https://i.dummyjson.com/data/products/2/2.jpg",
-        "https://i.dummyjson.com/data/products/2/3.jpg",
-        "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      ],
-    },
-    {
-      id: 6,
-      title: "iPhone X",
-      description:
-        "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
-      price: 899,
-      discountPercentage: 17.94,
-      rating: 4.44,
-      stock: 34,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/2/1.jpg",
-        "https://i.dummyjson.com/data/products/2/2.jpg",
-        "https://i.dummyjson.com/data/products/2/3.jpg",
-        "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      ],
-    },
-    {
-      id: 7,
-      title: "iPhone X",
-      description:
-        "SIM-Free, Model A19211 6.5-inch Super Retina HD display with OLED technology A12 Bionic chip with ...",
-      price: 899,
-      discountPercentage: 17.94,
-      rating: 4.44,
-      stock: 34,
-      brand: "Apple",
-      category: "smartphones",
-      thumbnail: "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      images: [
-        "https://i.dummyjson.com/data/products/2/1.jpg",
-        "https://i.dummyjson.com/data/products/2/2.jpg",
-        "https://i.dummyjson.com/data/products/2/3.jpg",
-        "https://i.dummyjson.com/data/products/2/thumbnail.jpg",
-      ],
-    },
-  ];
+  const addToCartHandler = (id, name, price, img, stock) => {
+    if (stock === 0)
+      return Toast.show({
+        type: "error",
+        text1: "Out Of Stock",
+      });
+    dispatch({
+      type: "addToCart",
+      payload: {
+        product: id,
+        name,
+        price,
+        img,
+        stock,
+        quantity: 1,
+      },
+    });
+    Toast.show({
+      type: "success",
+      text1: "Added To Cart",
+    });
 
-  const addToCartHandler = (id) => {
-    console.log("add cart");
   };
 
   const renderProductCard = ({ item }) => (
@@ -165,38 +81,47 @@ const Home = () => {
     />
   );
   return (
-    <>  
-        <View
-          style={{
-            ...defaultStyle,
-            paddingHorizontal: 30,
-            paddingBottom:10,
-            backgroundColor: colors.color1_light,
-            flex:0
-          }}
-        >
+    <>
+      <View
+        style={{
+          ...defaultStyle,
+          paddingHorizontal: 30,
+          paddingBottom: 10,
+          backgroundColor: colors.color1_light,
+          flex: 0,
+        }}
+      >
+        <View>
           <Header />
-          <View>
-            <View
+        </View>
+        <View>
+          <View
+            style={{
+              paddingTop: 70,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Text
               style={{
-                paddingTop: 70,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
+                fontSize: 22,
+                position: "absolute",
+                bottom: 0,
+                color: colors.color9,
               }}
             >
-              <Text style={{ fontSize: 22, position: "absolute", bottom: 14 ,color:colors.color9}}>
-                Hey, Rahul
-              </Text>
-            </View>
-
-            <Search />
-
-            <MiniHeader />
+              Hey, Rahul
+            </Text>
           </View>
+
+          <Search />
+
+          <MiniHeader />
         </View>
-        <View style={defaultStyle}>
-        <View style={{ flexDirection: "row", height: 123,marginLeft:20}}>
+      </View>
+      <View style={defaultStyle}>
+        <View style={{ flexDirection: "row", height: 123, marginLeft: 20 }}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -215,18 +140,27 @@ const Home = () => {
         </View>
 
         <View style={{ flex: 1 }}>
-          <Text style={{ fontSize: 30, marginTop: 15 , marginLeft:27 }}>Recommended</Text>
-
-          <FlatList
-            data={products}
-            renderItem={renderProductCard}
-            keyExtractor={(item) => item.id.toString()}
-            numColumns={2}
-            showsVerticalScrollIndicator={false}
-          />
+          <Text style={{ fontSize: 30, marginTop: 15, marginLeft: 27 }}>
+            Recommended
+          </Text>
+          <View>
+            {loading ? (
+              <Loader/>
+            ) : (
+              <FlatList
+                data={products}
+                renderItem={renderProductCard}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                showsVerticalScrollIndicator={false}
+              />
+            )}
+          </View>
         </View>
       </View>
       <Footer activeRoute={"home"} />
+
+      {/* <FooterAni/> */}
     </>
   );
 };
